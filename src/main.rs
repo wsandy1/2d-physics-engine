@@ -19,7 +19,7 @@ struct PhysicsSolver {
 impl PhysicsSolver {
     fn new(gravity: Vec2d<f64>, size: piston::window::Size) -> Self {
         let unit_size = size.width / NUM_UNITS as f64;
-        return Self { gravity, unit_size, objects: vec![PhysicsObject { position_current: [5.0, 0.], position_old: [5.0, 0.0], acceleration: [0.0, 0.0] }]};
+        return Self { gravity, unit_size, objects: vec![PhysicsObject { position_current: [5.0, 0.], position_old: [5.0, 0.0], acceleration: [0.0, 0.0], points: vec![[0.0, 0.0], [1.0, 0.0], [0.5, 1.0], [1.0, 2.0], [0.0, 2.0]] }]};
     }
 
     fn resize(&mut self, size: &piston::ResizeArgs) {
@@ -55,12 +55,17 @@ struct PhysicsObject {
     position_current: Vec2d<f64>,
     position_old: Vec2d<f64>,
     acceleration: Vec2d<f64>,
+    points: Vec<Vec2d>,
 }
 
 impl PhysicsObject {  
 
     fn get_pos(&self, unit_size: f64) -> Vec2d {
         return [self.position_current[0] * unit_size, self.position_current[1] * unit_size]
+    }
+
+    fn get_points(&self, unit_size: f64) -> Vec<Vec2d> {
+        return self.points.iter().map(|x| [x[0]*unit_size, x[1]*unit_size]).collect();
     }
 
     fn update_position(&mut self, dt: f64) {
@@ -106,7 +111,7 @@ impl GraphicsInterface {
             // );
             for obj in self.solver.objects.iter() {
                 let trans = c.transform.trans(obj.get_pos(self.solver.unit_size)[0], obj.get_pos(self.solver.unit_size)[1]);
-                rectangle(WHITE, rectangle::square(0.0, 0.0, 50.0), trans, gl);
+                polygon(WHITE, &obj.get_points(self.solver.unit_size)[..], trans, gl);
             }
         });
     }

@@ -6,3 +6,4 @@ Based on my [Verlet integration solver](https://github.com/wsandy1/rust-verlet-s
 * Mass and momentum
 * Air resistance
 * Friction
+* Elasticity

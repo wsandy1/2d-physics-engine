@@ -12,7 +12,7 @@ import (
 )
 
 type PhysicsEngine struct {
-	objects  []PhysicsObject
+	objects  []RigidBody
 	gravity  vector2.Vec2
 	substeps uint16
 }
@@ -46,29 +46,11 @@ func (e *PhysicsEngine) VerletSolve(dt float32) {
 func (e *PhysicsEngine) N2Solve() {
 	for i := range e.objects {
 		var resultant vector2.Vec2
-		for j := range e.objects[i].pointforces {
-			resultant = vector2.Add(resultant, e.objects[i].pointforces[j].force)
+		for j := range e.objects[i].point_forces {
+			resultant = vector2.Add(resultant, e.objects[i].point_forces[j].DirMag)
 		}
 		e.objects[i].Accelerate(vector2.ConstDiv(resultant, float32(e.objects[i].mass)))
 	}
-}
-
-type PhysicsObject struct {
-	mass             uint16
-	current_position vector2.Vec2
-	last_position    vector2.Vec2
-	acceleration     vector2.Vec2
-	poly             graphics.Polygon
-	pointforces      []PointForce
-}
-
-func (o *PhysicsObject) Accelerate(v vector2.Vec2) {
-	o.acceleration = vector2.Add(o.acceleration, v)
-}
-
-type PointForce struct {
-	origin vector2.Vec2
-	force  vector2.Vec2
 }
 
 type Game struct{}
@@ -94,7 +76,7 @@ func (g *Game) Update() error {
 
 		inprog_vertices[0] = vector2.Vec2{X: 0, Y: 0}
 
-		new_object := PhysicsObject{
+		new_object := RigidBody{
 			mass:             100,
 			current_position: first_saved,
 			last_position:    first_saved,
@@ -103,10 +85,7 @@ func (g *Game) Update() error {
 				Color:    color.RGBA{255, 0, 0, 255},
 				Vertices: inprog_vertices,
 			},
-			pointforces: []PointForce{{
-				origin: vector2.Vec2{X: 0, Y: 0},
-				force:  vector2.Vec2{X: 0, Y: 0},
-			}},
+			point_forces: []PointForce{},
 		}
 
 		engine.objects = append(engine.objects, new_object)
@@ -133,7 +112,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 func main() {
 	engine = PhysicsEngine{
 		gravity:  vector2.Vec2{X: 0, Y: 9.81},
-		objects:  []PhysicsObject{},
+		objects:  []RigidBody{},
 		substeps: 16,
 	}
 	game := &Game{}

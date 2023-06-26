@@ -92,20 +92,20 @@ func (g *Game) Update() error {
 		}
 		first_saved = inprog_vertices[0]
 
-		inprog_vertices[0] = vector2.Vec2{0, 0}
+		inprog_vertices[0] = vector2.Vec2{X: 0, Y: 0}
 
 		new_object := PhysicsObject{
 			mass:             100,
 			current_position: first_saved,
 			last_position:    first_saved,
-			acceleration:     vector2.Vec2{0, 0},
+			acceleration:     vector2.Vec2{X: 0, Y: 0},
 			poly: graphics.Polygon{
 				Color:    color.RGBA{255, 0, 0, 255},
 				Vertices: inprog_vertices,
 			},
 			pointforces: []PointForce{{
-				origin: vector2.Vec2{0, 0},
-				force:  vector2.Vec2{0, 0},
+				origin: vector2.Vec2{X: 0, Y: 0},
+				force:  vector2.Vec2{X: 0, Y: 0},
 			}},
 		}
 
@@ -132,7 +132,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func main() {
 	engine = PhysicsEngine{
-		gravity:  vector2.Vec2{0, 9.81},
+		gravity:  vector2.Vec2{X: 0, Y: 9.81},
 		objects:  []PhysicsObject{},
 		substeps: 16,
 	}

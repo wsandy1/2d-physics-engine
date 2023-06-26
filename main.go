@@ -83,7 +83,7 @@ var (
 func (g *Game) Update() error {
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
-		inprog_vertices = append(inprog_vertices, vector2.Vec2{float32(x), float32(y)})
+		inprog_vertices = append(inprog_vertices, vector2.Vec2{X: float32(x), Y: float32(y)})
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyE) {

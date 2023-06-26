@@ -39,7 +39,7 @@ func (e *PhysicsEngine) VerletSolve(dt float32) {
 		vel := vector2.Sub(e.objects[i].current_position, e.objects[i].last_position)
 		e.objects[i].last_position = e.objects[i].current_position
 		e.objects[i].current_position = vector2.Add(vector2.Add(e.objects[i].current_position, vel), vector2.ConstMul(vector2.ConstMul(e.objects[i].acceleration, dt), dt))
-		e.objects[i].acceleration = vector2.Vec2{0, 0}
+		e.objects[i].acceleration = vector2.Vec2{X: 0, Y: 0}
 	}
 }
 

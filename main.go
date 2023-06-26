@@ -11,48 +11,6 @@ import (
 	"github.com/wsandy1/2d-physics-engine/vector2"
 )
 
-type PhysicsEngine struct {
-	objects  []RigidBody
-	gravity  vector2.Vec2
-	substeps uint16
-}
-
-func (e *PhysicsEngine) Update(tps float32) {
-	var dt float32 = 1 / tps
-	// sub_dt := dt / float32(e.substeps)
-	// for i := 0; i < int(e.substeps); i++ {
-	e.ApplyGravity()
-	e.N2Solve()
-	e.VerletSolve(dt)
-	// }
-
-}
-
-func (e *PhysicsEngine) ApplyGravity() {
-	for i := range e.objects {
-		e.objects[i].Accelerate(e.gravity)
-	}
-}
-
-func (e *PhysicsEngine) VerletSolve(dt float32) {
-	for i := range e.objects {
-		vel := vector2.Sub(e.objects[i].current_position, e.objects[i].last_position)
-		e.objects[i].last_position = e.objects[i].current_position
-		e.objects[i].current_position = vector2.Add(vector2.Add(e.objects[i].current_position, vel), vector2.ConstMul(vector2.ConstMul(e.objects[i].acceleration, dt), dt))
-		e.objects[i].acceleration = vector2.Vec2{X: 0, Y: 0}
-	}
-}
-
-func (e *PhysicsEngine) N2Solve() {
-	for i := range e.objects {
-		var resultant vector2.Vec2
-		for j := range e.objects[i].point_forces {
-			resultant = vector2.Add(resultant, e.objects[i].point_forces[j].DirMag)
-		}
-		e.objects[i].Accelerate(vector2.ConstDiv(resultant, float32(e.objects[i].mass)))
-	}
-}
-
 type Game struct{}
 
 var (
@@ -88,7 +46,7 @@ func (g *Game) Update() error {
 			point_forces: []PointForce{},
 		}
 
-		engine.objects = append(engine.objects, new_object)
+		engine.RigidBodies = append(engine.RigidBodies, new_object)
 		inprog_vertices = []vector2.Vec2{}
 	}
 
@@ -97,8 +55,8 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	for i := range engine.objects {
-		engine.objects[i].poly.Draw(screen, engine.objects[i].current_position, true)
+	for i := range engine.RigidBodies {
+		engine.RigidBodies[i].poly.Draw(screen, engine.RigidBodies[i].current_position, true)
 	}
 
 	ebitenutil.DebugPrint(screen, message)
@@ -111,9 +69,9 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func main() {
 	engine = PhysicsEngine{
-		gravity:  vector2.Vec2{X: 0, Y: 9.81},
-		objects:  []RigidBody{},
-		substeps: 16,
+		Gravity:     vector2.Vec2{X: 0, Y: 9.81},
+		RigidBodies: []RigidBody{},
+		substeps:    16,
 	}
 	game := &Game{}
 	ebiten.SetWindowSize(640, 480)

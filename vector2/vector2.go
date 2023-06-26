@@ -15,7 +15,7 @@ func (v *Vec2) Rotate(theta float64) Vec2 {
 }
 
 func Add(v1 Vec2, v2 Vec2) Vec2 {
-	x := v1.X + v2.Y
+	x := v1.X + v2.X
 	y := v1.Y + v2.Y
 	vr := Vec2{x, y}
 	return vr

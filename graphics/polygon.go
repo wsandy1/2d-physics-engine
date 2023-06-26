@@ -6,7 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"github.com/wsandy1/2d-physics-engine/vector2d"
+	"github.com/wsandy1/2d-physics-engine/vector2"
 )
 
 var (
@@ -25,17 +25,17 @@ func init() {
 // struct representing a polygon
 type Polygon struct {
 	Color    color.RGBA
-	Vertices []vector2d.Vec2
+	Vertices []vector2.Vec2
 }
 
 // draws a polygon to the supplied image (usually the screen)
-func (p Polygon) Draw(screen *ebiten.Image, position vector2d.Vec2, aa bool) {
+func (p Polygon) Draw(screen *ebiten.Image, position vector2.Vec2, aa bool) {
 	var path vector.Path
 	// start path at first vertex
-	path.MoveTo(p.Vertices[0].X(), p.Vertices[0].Y())
+	path.MoveTo(p.Vertices[0].X, p.Vertices[0].Y)
 	for i := 1; i < len(p.Vertices); i++ {
 		// draw a line to each subsequent vertex
-		path.LineTo(p.Vertices[i].X(), p.Vertices[i].Y())
+		path.LineTo(p.Vertices[i].X, p.Vertices[i].Y)
 	}
 	path.Close()
 
@@ -46,8 +46,8 @@ func (p Polygon) Draw(screen *ebiten.Image, position vector2d.Vec2, aa bool) {
 	for i := range vs {
 		// apply provided position effectively shifting by X and Y
 		r, g, b, a := p.Color.RGBA()
-		vs[i].DstX = (vs[i].DstX + float32(position.X()))
-		vs[i].DstY = (vs[i].DstY + float32(position.Y()))
+		vs[i].DstX = (vs[i].DstX + float32(position.X))
+		vs[i].DstY = (vs[i].DstY + float32(position.Y))
 		vs[i].SrcX = 1
 		vs[i].SrcY = 1
 		vs[i].ColorR = float32(r) / float32(0xff)
@@ -63,20 +63,20 @@ func (p Polygon) Draw(screen *ebiten.Image, position vector2d.Vec2, aa bool) {
 }
 
 // rotate polygon around a given point
-func (p *Polygon) Rotate(theta float64, centre vector2d.Vec2) {
-	var shift []vector2d.Vec2
+func (p *Polygon) Rotate(theta float64, centre vector2.Vec2) {
+	var shift []vector2.Vec2
 	for i := range p.Vertices {
-		shift = append(shift, vector2d.Sub(p.Vertices[i], centre))
+		shift = append(shift, vector2.Sub(p.Vertices[i], centre))
 	}
 
-	var rot []vector2d.Vec2
+	var rot []vector2.Vec2
 	for i := range shift {
 		rot = append(rot, shift[i].Rotate(theta))
 	}
 
-	var back []vector2d.Vec2
+	var back []vector2.Vec2
 	for i := range rot {
-		back = append(back, vector2d.Add(rot[i], centre))
+		back = append(back, vector2.Add(rot[i], centre))
 	}
 
 	p.Vertices = back

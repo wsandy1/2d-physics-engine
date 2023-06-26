@@ -3,8 +3,7 @@ package vector2
 import "math"
 
 type Vec2 struct {
-	x float32
-	y float32
+	x, y float32
 }
 
 // rotate by theta degrees about origin (positive = anticlockwise)

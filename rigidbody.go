@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/wsandy1/2d-physics-engine/graphics"
@@ -71,7 +70,6 @@ func CalculateCentreOfMass(vertices []vector2.Vec2) vector2.Vec2 {
 		total_vec = vector2.Add(total_vec, vector2.ConstMul(t.CoM, float32(t.Area)))
 		total_area += t.Area
 	}
-	fmt.Printf("%+v\n", total_vec)
 
 	// return overall CoM
 	return vector2.ConstDiv(total_vec, float32(total_area))

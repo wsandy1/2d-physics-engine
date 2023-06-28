@@ -37,7 +37,7 @@ func (b *RigidBody) Accelerate(v vector2.Vec2) {
 	b.acceleration = vector2.Add(b.acceleration, v)
 }
 
-func CalculateCentreOfMass(vertices []vector2.Vec2) vector2.Vec2 {
+func CalculateCentreOfMassAndMomentOfInertia(vertices []vector2.Vec2, mass float32) (vector2.Vec2, float32) {
 	triangles := []Triangle{}
 	for i := 2; i < len(vertices); i++ {
 		// make triangles by drawing a line to each non-adjacent vertex
@@ -68,9 +68,35 @@ func CalculateCentreOfMass(vertices []vector2.Vec2) vector2.Vec2 {
 
 	for _, t := range triangles {
 		total_vec = vector2.Add(total_vec, vector2.ConstMul(t.CoM, float32(t.Area)))
-		total_area += t.Area
+		total_area = total_area + t.Area
 	}
 
-	// return overall CoM
-	return vector2.ConstDiv(total_vec, float32(total_area))
+	// calculate overall CoM
+	com := vector2.ConstDiv(total_vec, float32(total_area))
+
+	var total_moi float32
+
+	for i := range triangles {
+		// calculate triangle side lengths
+		var side_lengths [3]float32
+		side_lengths[0] = vector2.Magnitude(vector2.Sub(triangles[i].Two, triangles[i].One))
+		side_lengths[1] = vector2.Magnitude(vector2.Sub(triangles[i].Three, triangles[i].Two))
+		side_lengths[2] = vector2.Magnitude(vector2.Sub(triangles[i].Three, triangles[i].One))
+
+		// calculate mass of triangle by using the fraction of total area which the triangle takes up
+		tri_mass := (float32(triangles[i].Area / total_area)) * mass
+
+		// calculate MoI of trianlge about its centre of mass by using I = 1/36 * m * (A^2 + B^2 + C^2)
+		moi := 0.0277777777777 * float64(mass) * (math.Pow(float64(side_lengths[0]), 2) + math.Pow(float64(side_lengths[1]), 2) + math.Pow(float64(side_lengths[2]), 2))
+
+		// distance between overall CoM and triangle CoM
+		distance := vector2.Magnitude(vector2.Sub(com, triangles[i].CoM))
+
+		// use parallel axis theorem I = Icm + md^2 to calculate MoI of triangle about the total CoM
+		pat_moi := float32(moi + float64(tri_mass)*math.Pow(float64(distance), 2))
+
+		total_moi = total_moi + pat_moi
+	}
+
+	return com, total_moi
 }

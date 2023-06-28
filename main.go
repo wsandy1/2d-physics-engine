@@ -69,7 +69,9 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	fmt.Printf("%+v\n", CalculateCentreOfMass([]vector2.Vec2{{X: 0, Y: 0}, {X: 10, Y: 0}, {X: 15, Y: 5}, {X: 10, Y: 10}, {X: 0, Y: 10}}))
+	com, moi := CalculateCentreOfMassAndMomentOfInertia([]vector2.Vec2{{X: 0, Y: 0}, {X: 10, Y: 0}, {X: 15, Y: 5}, {X: 10, Y: 10}, {X: 0, Y: 10}}, 100)
+	fmt.Printf("%+v\n", com)
+	fmt.Printf("%+v\n", moi)
 	engine = PhysicsEngine{
 		Gravity:     vector2.Vec2{X: 0, Y: 9.81},
 		RigidBodies: []RigidBody{},

@@ -45,3 +45,13 @@ func (e *PhysicsEngine) N2Solve() {
 		e.RigidBodies[i].Accelerate(vector2.ConstDiv(resultant, float32(e.RigidBodies[i].mass)))
 	}
 }
+
+func (e *PhysicsEngine) MomentSolve() {
+	for i := range e.RigidBodies {
+		var total_torque vector2.Vec2
+		for j := range e.RigidBodies[i].point_forces {
+			// r_perp := vector2.Sub(e.RigidBodies[i].point_forces[j].Origin, )
+			// torque = perpendicular vector from com to origin dot product force vector
+		}
+	}
+}

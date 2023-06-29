@@ -55,3 +55,8 @@ func ConstDiv(v1 Vec2, c float32) Vec2 {
 func Magnitude(v Vec2) float32 {
 	return float32(math.Sqrt(math.Pow(float64(v.X), 2) + math.Pow(float64(v.Y), 2)))
 }
+
+// gives the dot product of two vectors
+func Dot(v1 Vec2, v2 Vec2) float32 {
+	return v1.X*v2.X + v1.Y*v2.Y
+}

@@ -40,7 +40,7 @@ func (e *PhysicsEngine) N2Solve() {
 	for i := range e.RigidBodies {
 		var resultant vector2.Vec2
 		for j := range e.RigidBodies[i].point_forces {
-			resultant = vector2.Add(resultant, e.RigidBodies[i].point_forces[j].DirMag)
+			resultant = vector2.Add(resultant, e.RigidBodies[i].point_forces[j].Vector)
 		}
 		e.RigidBodies[i].Accelerate(vector2.ConstDiv(resultant, float32(e.RigidBodies[i].mass)))
 	}
@@ -48,10 +48,17 @@ func (e *PhysicsEngine) N2Solve() {
 
 func (e *PhysicsEngine) MomentSolve() {
 	for i := range e.RigidBodies {
-		var total_torque vector2.Vec2
+		var total_torque float32
 		for j := range e.RigidBodies[i].point_forces {
-			// r_perp := vector2.Sub(e.RigidBodies[i].point_forces[j].Origin, )
-			// torque = perpendicular vector from com to origin dot product force vector
+			// because the CoM is at {0,0}, the origin vector of the force is the same as the radius vector CoM->Force Origin
+			// rotate 90 to give perpendicular radius vector
+			r_perp := e.RigidBodies[i].point_forces[j].Origin.Rotate(90)
+			// torque exerted by the force on the CoM is the dot product of the perpendicular radius vector from CoM->ForceOrigin and the force vector.
+			torque := vector2.Dot(r_perp, e.RigidBodies[i].point_forces[j].Vector)
+			total_torque = total_torque + torque
 		}
+		// angular acceleration = torque / moment of inertia
+		a := total_torque / e.RigidBodies[i].moi
+		e.RigidBodies[i].AngularAccelerate(a)
 	}
 }

@@ -15,10 +15,11 @@ type RigidBody struct {
 
 	current_position vector2.Vec2
 	last_position    vector2.Vec2
+	acceleration     vector2.Vec2
 
-	acceleration  vector2.Vec2
-	rotation      float32
-	last_rotation float32
+	rotation             float32
+	last_rotation        float32
+	angular_acceleration float32
 
 	//vertices     []vector2.Vec2
 	poly         graphics.Polygon

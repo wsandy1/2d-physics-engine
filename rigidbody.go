@@ -38,6 +38,10 @@ func (b *RigidBody) Accelerate(v vector2.Vec2) {
 	b.acceleration = vector2.Add(b.acceleration, v)
 }
 
+func (b *RigidBody) AngularAccelerate(a float32) {
+	b.angular_acceleration = b.angular_acceleration + a
+}
+
 func CalculateCentreOfMassAndMomentOfInertia(vertices []vector2.Vec2, mass float32) (vector2.Vec2, float32) {
 	triangles := []Triangle{}
 	for i := 2; i < len(vertices); i++ {

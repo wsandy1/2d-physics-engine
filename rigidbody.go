@@ -60,7 +60,7 @@ func CalculateCentreOfMassAndMomentOfInertia(vertices []vector2.Vec2, mass float
 
 		// calculate the midpoint of the edge between the first and second points
 		midpoint := vector2.Add(current_triangle.One, vector2.ConstMul(vector2.Sub(current_triangle.Two, current_triangle.One), 0.5))
-		//calculate CoM, which is 1/3 of the way along the meridian
+		//calculate CoM, which is 1/3 of the way along the median
 		current_triangle.CoM = vector2.Add(midpoint, vector2.ConstMul(vector2.Sub(current_triangle.Three, midpoint), 0.333333))
 
 		triangles = append(triangles, current_triangle)
